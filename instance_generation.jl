@@ -51,8 +51,12 @@ end
 
 function generate_symetric_sum_instance(nb_players::Int64, nb_symetric_games::Int64, create_game_values::Function, file_path::String="", size_distribution_factor::Float64=1.)::Tuple{Function, Function}
     # This is the main function used to generate instance of cooperative games.
-    # A symetric sum game is composed of a sum of subgames which are all symetric with respect to the players inside these subgames.
-    # In order to quicken the computations, we represent some binary vectors with Int128 where each bit of the number corresponds to an entry of the vector. This trick is used when their are less the 128 players in the game.
+    # A symetric sum game is composed of a sum of subgames which are all symetric with respect to the players inside these subgames. For more details see the paper "Approximating the Shapley value with sampling : survey and new stratification techniques"
+    # In order to quicken the computations, we represent some binary vectors with Int128 where each bit of the number corresponds to an entry of the vector. This trick is used when there are less than 128 players in the game.
+    # nb_players : number of players in the generated game
+    # nb_symetric_games : number of subgames which compose the final generated game
+    # create_game_values : function which given a number of player N creates an array of size N corresponding to the values of a symetric game with N players.
+    # file_path : if non-empty, the game is saved in a file using JLD2
     symetric_game_list = Tuple{Int128, Vector{Float64}}[]
     if nb_players >= 127
         symetric_game_list = Tuple{Vector{Int64}, Vector{Float64}}[]

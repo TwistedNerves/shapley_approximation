@@ -3,4 +3,5 @@ module ShapleyApproximation
     
     include("./instance_generation.jl")
     include("./shapley_algorithms.jl")
+
 end # module
