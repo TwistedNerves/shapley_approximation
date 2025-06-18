@@ -94,6 +94,62 @@ function generate_symetric_sum_instance(nb_players::Int64, nb_symetric_games::In
 end
 
 
+
+
+function generate_symetric_sum_instance(nb_players::Int64, nb_symetric_games::Int64, game_values_creation_info, file_path::String="", size_distribution_factor::Float64=1.)::Tuple{Function, Function}
+    # This is the main function used to generate instance of cooperative games.
+    # A symetric sum game is composed of a sum of subgames which are all symetric with respect to the players inside these subgames. For more details see the paper "Approximating the Shapley value with sampling : survey and new stratification techniques"
+    # In order to quicken the computations, we represent some binary vectors with Int128 where each bit of the number corresponds to an entry of the vector. This trick is used when there are less than 128 players in the game.
+    # nb_players : number of players in the generated game
+    # nb_symetric_games : number of subgames which compose the final generated game
+    # game_values_creation_info : list of triplets (function, function, probability_to_use_these_functions). First function returns a game size. Second function : given a game size N creates an array of size N corresponding to the values of a symetric game with N players.
+    # file_path : if non-empty, the game is saved in a file using JLD2
+    symetric_game_list = Tuple{Int128, Vector{Float64}}[]
+    if nb_players >= 127
+        symetric_game_list = Tuple{Vector{Int64}, Vector{Float64}}[]
+    else
+        symetric_game_list = Tuple{Int128, Vector{Float64}}[] # represent a binary vector with an Int128
+    end
+
+    for game_index in 1:nb_symetric_games # each loop creates one subgame
+        distrib = Distributions.Categorical([proba for (_, _, proba) in game_values_creation_info])
+        size_ditrib_function, create_game_values, proba = game_values_creation_info[rand(distrib)]
+
+        game_size = size_ditrib_function()
+        included_players = collect(shuffle(1:nb_players))[1:game_size] # which players participate in the game
+
+        if nb_players >= 127
+            is_in_game = zeros(Int64, nb_players)
+            is_in_game[included_players] .= 1
+        else
+            is_in_game::Int128 = sum([Int128(2)^(player-1) for player in included_players])
+        end
+        
+        nb_included_players = length(included_players)
+        game_values = create_game_values(nb_included_players)
+        game_values = game_values ./ game_values[end]
+
+        push!(symetric_game_list, (is_in_game, game_values))
+    end
+
+    if file_path != ""
+        save_object(file_path, (symetric_game_list, nb_players)) # saving the game in a file using JLD2
+    end
+
+    evaluation_function = player_list -> evaluate_symetric_sum_games(symetric_game_list, player_list)
+    shapley_evaluator = () -> shapley_evaluator_symetric_sum_games(symetric_game_list, nb_players)
+    return evaluation_function, shapley_evaluator
+end
+
+
+function constant_distrib(constant::Int64)::Int64
+    return constant
+end
+
+function exp_uniform_distrib(nb_players::Int64)::Int64
+    return floor(Int64, exp(log(2) + rand() * (log(nb_players) - log(2))))
+end
+
 function create_monotone_function(nb_players::Int64)::Vector{Float64}
     game_values = zeros(nb_players)
     game_values[1] = 1
@@ -104,7 +160,9 @@ function create_monotone_function(nb_players::Int64)::Vector{Float64}
 end
 
 function create_random_function(nb_players::Int64, distribution_min::Float64=0., distribution_spread::Float64=1.)::Vector{Float64}
-    return vec(rand(nb_players) .* distribution_spread .+ distribution_min)
+    x = vec(rand(nb_players) .* distribution_spread .+ distribution_min)
+    x[end] = 1.
+    return x
 end
 
 
