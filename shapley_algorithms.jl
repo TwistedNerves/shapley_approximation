@@ -131,14 +131,6 @@ function post_stratif_indicator_values(evaluation_function::Function, nb_players
 
         # computing the coefficients using different methods
         if method == "raking"
-            for subset_size in 1:nb_players
-                index_list = [sample_index for (vector_subset, eval, sample_index) in full_sample_list if sum(vector_subset) == subset_size]
-                if length(index_list) > 0 
-                    sum_coefficients = sum(coefficient_list[index_list])
-                    coefficient_list[index_list] .*= 1 / nb_players / sum_coefficients
-                end
-            end
-
             nb_raking_rounds = 100
             for index in 1:nb_raking_rounds
                 for (index_list, coefficient) in stratification_list
@@ -146,6 +138,7 @@ function post_stratif_indicator_values(evaluation_function::Function, nb_players
                     coefficient_list[index_list] .*= coefficient / sum_coefficients
                 end
             end
+
         elseif method == "barycenter"
             nb_raking_rounds = 100
             for index in 1:nb_raking_rounds

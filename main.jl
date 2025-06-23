@@ -54,7 +54,7 @@ z = Float64[]
 n = 30
 for i in 1:n
 
-    nb_players = 50
+    nb_players = 100
     nb_symetric_games = 5*nb_players
     # # create_game_values = create_subaditive_function
     create_game_values = create_monotone_function
@@ -70,20 +70,20 @@ for i in 1:n
     # evaluation_function, shapley_evaluator = generate_symetric_sum_instance(nb_players, nb_symetric_games, game_values_creation_info, "", 4.)
     
 
-    # function instance_name_from_index(index::Int64, path::String)::String
-    #     list_files = readdir(path)
-    #     sort!(list_files)
-    #     return list_files[index]
-    # end
-    # global_path = "/home/francois-lamothe/Desktop"
-    # # dataset_name = "varying_variance_tradeoff"
-    # dataset_name = "varying_sparseness"
-    # dir_path = "$(global_path)/shapley_approximation/datasets/$(dataset_name)"
-    # instance_name = instance_name_from_index(i, dir_path)
-    # println(instance_name)
+    function instance_name_from_index(index::Int64, path::String)::String
+        list_files = readdir(path)
+        sort!(list_files)
+        return list_files[index]
+    end
+    global_path = "/home/francois-lamothe/Desktop"
+    # dataset_name = "varying_variance_tradeoff"
+    dataset_name = "varying_sparseness"
+    dir_path = "$(global_path)/shapley_approximation/datasets/$(dataset_name)"
+    instance_name = instance_name_from_index(i, dir_path)
+    println(instance_name)
 
-    # file_path = "$(dir_path)/$(instance_name)"
-    # evaluation_function, shapley_evaluator = read_symetric_sum_instance(file_path)
+    file_path = "$(dir_path)/$(instance_name)"
+    evaluation_function, shapley_evaluator = read_symetric_sum_instance(file_path)
 
     # nb_players = 50
     # evaluation_function, shapley_evaluator = generate_airport_instance(nb_players)
