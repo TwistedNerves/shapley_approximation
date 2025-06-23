@@ -1,4 +1,6 @@
 #using Random, Distributions, Combinatorics, JLD2
+using Pkg
+Pkg.instantiate()
 using Random
 using Distributions
 using Combinatorics
@@ -39,7 +41,7 @@ global_path = "/pfcalcul/work/flamothe"
 # global_path = "/home/francois-lamothe/Desktop"
 
 arg_init = parse(Int64, ARGS[1]) - 1
-# arg_init = 12023
+#arg_init = 12023
 
 # dataset_list = ["random_sparse", "random", "monotone_sparse", "monotone", "voting", "airport", "knapsack"]
 dataset_list = ["varying_sparseness", "varying_variance_tradeoff", "voting", "airport", "knapsack"]
@@ -61,7 +63,7 @@ file_path = "$(dir_path)/$(instance_name)"
 evaluation_function, shapley_evaluator = read_symetric_sum_instance(file_path)
 
 nb_underscore_in_dataset_name = count(i->(i=='_'), dataset_name)
-nb_players = parse(Int64, collect(eachsplit(instance_name, "_"))[nb_underscore_in_dataset_name + 2])
+nb_players = parse(Int64, collect(split(instance_name, "_"))[nb_underscore_in_dataset_name + 2])
 
 true_shap = shapley_evaluator()
 
