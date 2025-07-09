@@ -96,7 +96,7 @@ end
 
 
 
-function generate_symetric_sum_instance(nb_players::Int64, nb_symetric_games::Int64, game_values_creation_info, file_path::String="", size_distribution_factor::Float64=1.)::Tuple{Function, Function}
+function generate_symetric_sum_instance(nb_players::Int64, nb_symetric_games::Int64, game_values_creation_info, file_path::String="")::Tuple{Function, Function}
     # This is the main function used to generate instance of cooperative games.
     # A symetric sum game is composed of a sum of subgames which are all symetric with respect to the players inside these subgames. For more details see the paper "Approximating the Shapley value with sampling : survey and new stratification techniques"
     # In order to quicken the computations, we represent some binary vectors with Int128 where each bit of the number corresponds to an entry of the vector. This trick is used when there are less than 128 players in the game.
@@ -176,6 +176,13 @@ end
 
 function create_knapsack_function(nb_players::Int64)::Vector{Float64}
     return vec(ones(nb_players))
+end
+
+
+function create_scaled_unanimity_function(nb_players::Int64)::Vector{Float64}
+    values = zeros(nb_players)
+    values[end] = rand()
+    return values
 end
 
 

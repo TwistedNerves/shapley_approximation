@@ -31,20 +31,33 @@ function average_squarred_normalized_error(target::Vector{Float64}, x::Vector{Fl
     return sum(normalized_error.^2) / size
 end
 
-# path = "/home/francois-lamothe/Desktop/shapley_approximation/datasets/"
-# # dataset_name = "varying_sparseness"
+path = "/home/francois-lamothe/Desktop/shapley_approximation/datasets/"
+# dataset_name = "varying_sparseness"
 # dataset_name = "varying_variance_tradeoff"
+dataset_name = "weighted_graph"
 
-# for proba in [0., 0.33, 0.66, 1.]
-#     for repeat in 1:20
-#         nb_players = 100
-#         file_path = path*"/"*dataset_name*"/$(dataset_name)_$(nb_players)_$(proba)_$(repeat)"
-#         nb_symetric_games = 5*nb_players
-#         # game_values_creation_info = [(() -> constant_distrib(2), create_monotone_function, proba), (() -> exp_uniform_distrib(nb_players), create_monotone_function, 1 - proba)]
-#         game_values_creation_info = [(() -> exp_uniform_distrib(nb_players), create_random_function, proba), (() -> exp_uniform_distrib(nb_players), create_monotone_function, 1 - proba)]
-#         evaluation_function, shapley_evaluator = generate_symetric_sum_instance(nb_players, nb_symetric_games, game_values_creation_info, file_path, 4.)
-#     end
-# end
+
+for proba in [0., 0.33, 0.66, 1.]
+    for repeat in 1:20
+        nb_players = 100
+        file_path = path*"/"*dataset_name*"/$(dataset_name)_$(nb_players)_$(proba)_$(repeat)"
+        nb_symetric_games = 5*nb_players
+        # game_values_creation_info = [(() -> constant_distrib(2), create_monotone_function, proba), (() -> exp_uniform_distrib(nb_players), create_monotone_function, 1 - proba)]
+        game_values_creation_info = [(() -> exp_uniform_distrib(nb_players), create_random_function, proba), (() -> exp_uniform_distrib(nb_players), create_monotone_function, 1 - proba)]
+        evaluation_function, shapley_evaluator = generate_symetric_sum_instance(nb_players, nb_symetric_games, game_values_creation_info, file_path, 4.)
+    end
+end
+
+for proba in [0., 0.33, 0.66, 1.]
+    for repeat in 1:20
+        nb_players = 100
+        file_path = path*"/"*dataset_name*"/$(dataset_name)_$(nb_players)_$(proba)_$(repeat)"
+        nb_symetric_games = 5*nb_players
+        # game_values_creation_info = [(() -> constant_distrib(2), create_monotone_function, proba), (() -> exp_uniform_distrib(nb_players), create_monotone_function, 1 - proba)]
+        game_values_creation_info = [(() -> exp_uniform_distrib(nb_players), create_random_function, proba), (() -> exp_uniform_distrib(nb_players), create_monotone_function, 1 - proba)]
+        evaluation_function, shapley_evaluator = generate_symetric_sum_instance(nb_players, nb_symetric_games, game_values_creation_info, file_path, 4.)
+    end
+end
 
 
 x = Float64[]
