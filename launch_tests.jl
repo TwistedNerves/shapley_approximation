@@ -44,7 +44,8 @@ arg_init = parse(Int64, ARGS[1]) - 1
 #arg_init = 12023
 
 # dataset_list = ["random_sparse", "random", "monotone_sparse", "monotone", "voting", "airport", "knapsack"]
-dataset_list = ["varying_sparseness", "varying_variance_tradeoff", "voting", "airport", "knapsack"]
+# dataset_list = ["varying_sparseness", "varying_variance_tradeoff", "voting", "airport", "knapsack"]
+dataset_list = ["weighted_graph"]
 algorithm_list = ["kernel", "mc no stratif", "mc position stratif", "mc player stratif", "mc both stratif", "cc position stratif", "cc both stratif", "cc position stratif neyman", "mc position stratif neyman"]
 nb_instances = 80
 sample_multiplier_list = [1, 4, 20, 100]
